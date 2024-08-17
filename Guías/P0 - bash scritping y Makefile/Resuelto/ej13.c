@@ -10,9 +10,9 @@ typedef struct usuario_s {
     int32_t cuit;    
 } usuario_t;
 
-// necesitamos una función que cargue los datos en un archivo para poder escribirlo y leerlo
 void escribirArchivo(usuario_t* user){
-    FILE* archivo = fopen("ej12.txt", "w");
+    // en vez del modo write, modo append, esto anda bien
+    FILE* archivo = fopen("ej13.txt", "a");
     fprintf(archivo, "%s %hhd %d \n", user->nombre, user->edad, user->cuit);
     fclose(archivo);
 }
@@ -45,15 +45,21 @@ int main(int argc, char *argv[])
 
     if ((strcmp(entrada, verInfo)) == 0)
     {
-        usuario_t* usuario = leerArchivo();
-        if (usuario == NULL)
+        usuario_t* usuarios = leerArchivo();
+        if (usuarios == NULL)
         {
             printf("¡Ningún usuario fue cargado a la plataforma todavía!\n");
         } else
         {
-            printf("Nombre: %s ,", usuario->nombre);
-            printf("edad: %hhd ,", usuario->edad);
-            printf("Nombre: %d \n", usuario->cuit);
+            FILE* archivo = fopen("ej13.txt", "r");
+            usuario_t* lectura = malloc(sizeof(usuario_t));
+            lectura->nombre = malloc(25 * sizeof(char));
+            char linea[256];
+            while(fgets(linea, sizeof(linea), archivo)){
+                sscanf(linea, "%24s %hhd %d", lectura->nombre, &lectura->edad, &lectura->cuit);
+                printf("Nombre: %s, Edad: %hhd, Cuit: %d\n", lectura->nombre, lectura->edad, lectura->cuit);
+            }
+            fclose(archivo);    
         }
 
     } else if ((strcmp(entrada, agregarInfo)) == 0)
