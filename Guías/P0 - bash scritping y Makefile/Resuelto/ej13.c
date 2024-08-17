@@ -1,4 +1,4 @@
-// Ej 12 - plataformaCargaUsuarios
+// Ej 13 - plataformaCargaUsuarios y lee de a muchos
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
     char* entrada = argv[1];
     char* verInfo = "verInformacionUsuario";
     char* agregarInfo = "agregarInformacionUsuario";
-
 
     if ((strcmp(entrada, verInfo)) == 0)
     {
