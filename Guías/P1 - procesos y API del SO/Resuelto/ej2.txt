@@ -1,0 +1,37 @@
+// tenemos definido el struct PCB
+struct PCB{
+	int STATUS;
+	int PID;
+	int PC;
+	...
+	registros
+	...
+	int CPU_TIME;
+}
+
+// esta rutina realiza el cambio de contexto entre dos procesos
+Ke_context_switch (PCB* pcb_0, PCB* pcb_1) {
+	// guardamos el contexto del proceso que se va
+	pcb_0->PC = PC;  // esto vale ya que el lenguaje tiene acceso a los registros del proce
+	pcb_0->registros = .. registros ..;
+	pcb_0-> CPU_TIME = ke_current_user_time();
+	// todo lo q se pueda actuslizar en su pcb...
+
+	// actualizamos su estado, está ready ahora
+	pcb_0->STAT = KE_READY;
+
+	// ponemos en 0 el tiempo
+	ke_reset_current_user_time();
+	
+	// cargamos el contexto del siguiente proceso, es decir
+	PC = ret()
+	R0 = pcb_1->R0
+	...
+	así con todos
+	...
+	
+	// seteamos 
+	set_current_process(pcb_1->PID);
+}
+	
+	
