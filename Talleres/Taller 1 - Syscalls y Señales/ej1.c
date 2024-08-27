@@ -108,6 +108,8 @@ int main(int argc, const char* argv[]){
 		// si está vivo ... 
 		if (pids_vivos[l] == 1)
 		{
+			// anunciamos ganadores falla!
+			printf("Ganador: %d\n",pids[l]);
 			// lo invitamos a morir
 			kill(pids[l], SIGKILL);
 		}
