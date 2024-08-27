@@ -6,9 +6,21 @@
 #include <time.h>
 
 // las globales
+// se declaran globales porque sino no hay forma de que los hijos sepan los valores de N,K,J
 int N, K, J;
 
+// los inicializamos en 10 porque por consigna no es mayor a 10 N
+
+// en pids nos guardamos los pids para poder después avisar uno por uno
+int pids[10];
+
+// en pids_vivos guardamos 1 si está vivo y 0 si está muerto (inician todos muertos)
+// esta implementación es medio hardcodeada pero tal vez sirva
+int pids_vivos[10] = {0};
+
+
 void sigterm_handler(int signal){
+	// los print son para saber si está funcionando
 	printf("Recibí SIGTERM\n");
 
 	// generador de num random entre 0 y N
@@ -19,7 +31,20 @@ void sigterm_handler(int signal){
 	// si es = al maldito
 	if (random == J)
 	{
+		// busca su pid, y marca en pids_vivos, muerto
+		pid_t pid = getpid();
+
+		for (int i = 0; i < N; i++)
+		{
+			if (pids[i] == pid)
+			{
+				pids_vivos[i] = 0;
+				break;
+			}
+		}
+
 		printf("Estas son mis últimas palabras\n");
+		// termina
 		exit(0);
 	}
 	
@@ -44,9 +69,6 @@ int main(int argc, const char* argv[]){
 	// n no puede ser mayor a 10 y j no puede ser mayor que n ni menor a 0
 	if(N > 10 || J > N || J < 0) exit(EXIT_FAILURE);
 
-	// en pids nos guardamos los pids para poder después avisar uno por uno
-	int pids[N];
-	
 	// creamos los n- hijos
 	for (int i = 0; i < N; i++)
 	{	
@@ -55,7 +77,10 @@ int main(int argc, const char* argv[]){
 
 		// almacenamos en pids
 		pids[i] = pid;
-		
+
+		// avisamos que está vivo
+		pids_vivos[i] = 1;
+
 		// si no se creó correctamente
 		if (pid == -1)exit(EXIT_FAILURE);
 		
@@ -74,10 +99,19 @@ int main(int argc, const char* argv[]){
 			
 			// esperamos 1 segundo
 			sleep(1);
+		}	
+	}
+
+	// el padre busca en pids_vivos aquellos vivos, y los mata
+	for (int l = 0; l < N; l++)
+	{
+		// si está vivo ... 
+		if (pids_vivos[l] == 1)
+		{
+			// lo invitamos a morir
+			kill(pids[l], SIGKILL);
 		}
 		
 	}
-
-	// ahora hay que capturar aquellos que están running, y mandarles sigkill para eliminarlos y luego frenar al padre.
 	
 }
