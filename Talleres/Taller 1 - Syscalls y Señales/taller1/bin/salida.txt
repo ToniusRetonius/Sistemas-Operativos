@@ -1,131 +1,46 @@
-tonius@tonius-XPS-13-9350:~/Desktop/Compu/Sistemas-Operativos/Talleres/Taller 1 - Syscalls y Señales/taller1/bin$ strace -f ./hai64 1
-execve("./hai64", ["./hai64", "1"], 0x7ffe2c6836f0 /* 48 vars */) = 0
+execve("./hai64", ["./hai64", "echo"], 0x7ffe6b93ae08 /* 49 vars */) = 0
 uname({sysname="Linux", nodename="tonius-XPS-13-9350", ...}) = 0
-brk(NULL)                               = 0x24c2000
-brk(0x24c31c0)                          = 0x24c31c0
-arch_prctl(ARCH_SET_FS, 0x24c2880)      = 0
+brk(NULL)                               = 0x86a000
+brk(0x86b1c0)                           = 0x86b1c0
+arch_prctl(ARCH_SET_FS, 0x86a880)       = 0
 readlink("/proc/self/exe", "/home/tonius/Desktop/Compu/Siste"..., 4096) = 104
-brk(0x24e41c0)                          = 0x24e41c0
-brk(0x24e5000)                          = 0x24e5000
+brk(0x88c1c0)                           = 0x88c1c0
+brk(0x88d000)                           = 0x88d000
 access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
-clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLDstrace: Process 9893 attached
-, child_tidptr=0x24c2b50) = 9893
-[pid  9892] rt_sigaction(SIGINT, {sa_handler=0x40108e, sa_mask=[INT], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x406bf0},  <unfinished ...>
-[pid  9893] rt_sigaction(SIGURG, {sa_handler=0x40105e, sa_mask=[URG], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x406bf0},  <unfinished ...>
-[pid  9892] <... rt_sigaction resumed>{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-[pid  9893] <... rt_sigaction resumed>{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-[pid  9892] rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
-[pid  9892] rt_sigaction(SIGCHLD, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-[pid  9892] rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
-[pid  9892] nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffd180fcbe0) = 0
-[pid  9892] write(1, "sup!\n", 5sup!
-)       = 5
-[pid  9892] kill(9893, SIGURG)          = 0
-[pid  9893] --- SIGURG {si_signo=SIGURG, si_code=SI_USER, si_pid=9892, si_uid=1000} ---
-[pid  9892] rt_sigprocmask(SIG_BLOCK, [CHLD],  <unfinished ...>
-[pid  9893] write(1, "ya va!\n", 7ya va!
- <unfinished ...>
-[pid  9892] <... rt_sigprocmask resumed>[], 8) = 0
-[pid  9893] <... write resumed>)        = 7
-[pid  9892] rt_sigaction(SIGCHLD, NULL,  <unfinished ...>
-[pid  9893] rt_sigreturn({mask=[]} <unfinished ...>
-[pid  9892] <... rt_sigaction resumed>{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-[pid  9893] <... rt_sigreturn resumed>) = 0
-[pid  9892] rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
-[pid  9892] nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffd180fcbe0) = 0
-[pid  9892] write(1, "sup!\n", 5sup!
-)       = 5
-[pid  9892] kill(9893, SIGURG)          = 0
-[pid  9893] --- SIGURG {si_signo=SIGURG, si_code=SI_USER, si_pid=9892, si_uid=1000} ---
-[pid  9892] rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
-[pid  9893] write(1, "ya va!\n", 7 <unfinished ...>
-ya va!
-[pid  9892] rt_sigaction(SIGCHLD, NULL,  <unfinished ...>
-[pid  9893] <... write resumed>)        = 7
-[pid  9892] <... rt_sigaction resumed>{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-[pid  9893] rt_sigreturn({mask=[]} <unfinished ...>
-[pid  9892] rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
-[pid  9893] <... rt_sigreturn resumed>) = 1
-[pid  9892] nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffd180fcbe0) = 0
-[pid  9892] write(1, "sup!\n", 5sup!
-)       = 5
-[pid  9892] kill(9893, SIGURG)          = 0
-[pid  9893] --- SIGURG {si_signo=SIGURG, si_code=SI_USER, si_pid=9892, si_uid=1000} ---
-[pid  9892] rt_sigprocmask(SIG_BLOCK, [CHLD],  <unfinished ...>
-[pid  9893] write(1, "ya va!\n", 7ya va!
- <unfinished ...>
-[pid  9892] <... rt_sigprocmask resumed>[], 8) = 0
-[pid  9893] <... write resumed>)        = 7
-[pid  9892] rt_sigaction(SIGCHLD, NULL,  <unfinished ...>
-[pid  9893] rt_sigreturn({mask=[]} <unfinished ...>
-[pid  9892] <... rt_sigaction resumed>{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-[pid  9893] <... rt_sigreturn resumed>) = 2
-[pid  9892] rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
-[pid  9892] nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffd180fcbe0) = 0
-[pid  9892] write(1, "sup!\n", 5sup!
-)       = 5
-[pid  9892] kill(9893, SIGURG)          = 0
-[pid  9893] --- SIGURG {si_signo=SIGURG, si_code=SI_USER, si_pid=9892, si_uid=1000} ---
-[pid  9892] rt_sigprocmask(SIG_BLOCK, [CHLD],  <unfinished ...>
-[pid  9893] write(1, "ya va!\n", 7ya va!
- <unfinished ...>
-[pid  9892] <... rt_sigprocmask resumed>[], 8) = 0
-[pid  9893] <... write resumed>)        = 7
-[pid  9892] rt_sigaction(SIGCHLD, NULL,  <unfinished ...>
-[pid  9893] rt_sigreturn({mask=[]} <unfinished ...>
-[pid  9892] <... rt_sigaction resumed>{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-[pid  9893] <... rt_sigreturn resumed>) = 3
-[pid  9892] rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
-[pid  9892] nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffd180fcbe0) = 0
-[pid  9892] write(1, "sup!\n", 5sup!
-)       = 5
-[pid  9892] kill(9893, SIGURG)          = 0
-[pid  9893] --- SIGURG {si_signo=SIGURG, si_code=SI_USER, si_pid=9892, si_uid=1000} ---
-[pid  9892] rt_sigprocmask(SIG_BLOCK, [CHLD],  <unfinished ...>
-[pid  9893] write(1, "ya va!\n", 7ya va!
- <unfinished ...>
-[pid  9892] <... rt_sigprocmask resumed>[], 8) = 0
-[pid  9893] <... write resumed>)        = 7
-[pid  9892] rt_sigaction(SIGCHLD, NULL,  <unfinished ...>
-[pid  9893] rt_sigreturn({mask=[]} <unfinished ...>
-[pid  9892] <... rt_sigaction resumed>{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-[pid  9893] <... rt_sigreturn resumed>) = 4
-[pid  9892] rt_sigprocmask(SIG_SETMASK, [],  <unfinished ...>
-[pid  9893] getppid( <unfinished ...>
-[pid  9892] <... rt_sigprocmask resumed>NULL, 8) = 0
-[pid  9893] <... getppid resumed>)      = 9892
-[pid  9892] nanosleep({tv_sec=1, tv_nsec=0},  <unfinished ...>
-[pid  9893] kill(9892, SIGINT <unfinished ...>
-[pid  9892] <... nanosleep resumed>{tv_sec=1, tv_nsec=28756}) = ? ERESTART_RESTARTBLOCK (Interrupted by signal)
-[pid  9893] <... kill resumed>)         = 0
-[pid  9892] --- SIGINT {si_signo=SIGINT, si_code=SI_USER, si_pid=9893, si_uid=1000} ---
-[pid  9893] execve("/usr/bin/flutter/bin/1", ["1"], 0x7ffd180fced0 /* 48 vars */ <unfinished ...>
-[pid  9892] wait4(-1,  <unfinished ...>
-[pid  9893] <... execve resumed>)       = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/usr/bin/flutter/bin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/usr/local/sbin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/usr/local/bin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/usr/sbin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/usr/bin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/sbin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/bin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/usr/games/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/usr/local/games/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/snap/bin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] execve("/snap/bin/1", ["1"], 0x7ffd180fced0 /* 48 vars */) = -1 ENOENT (No such file or directory)
-[pid  9893] dup(2)                      = 3
-[pid  9893] fcntl(3, F_GETFL)           = 0x80002 (flags O_RDWR|O_CLOEXEC)
-[pid  9893] fstat(3, {st_mode=S_IFCHR|0620, st_rdev=makedev(0x88, 0), ...}) = 0
-[pid  9893] mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x745011515000
-[pid  9893] lseek(3, 0, SEEK_CUR)       = -1 ESPIPE (Illegal seek)
-[pid  9893] write(3, "ERROR child exec(...): No such f"..., 49ERROR child exec(...): No such file or directory
-) = 49
-[pid  9893] close(3)                    = 0
-[pid  9893] munmap(0x745011515000, 4096) = 0
-[pid  9893] exit_group(1)               = ?
-[pid  9893] +++ exited with 1 +++
-<... wait4 resumed>[{WIFEXITED(s) && WEXITSTATUS(s) == 1}], 0, NULL) = 9893
---- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=9893, si_uid=1000, si_status=1, si_utime=499 /* 4.99 s */, si_stime=0} ---
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x86ab50) = 3457
+rt_sigaction(SIGINT, {sa_handler=0x40108e, sa_mask=[INT], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x406bf0}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
+rt_sigaction(SIGCHLD, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffc45c98330) = 0
+write(1, "sup!\n", 5)                   = 5
+kill(3457, SIGURG)                      = 0
+rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
+rt_sigaction(SIGCHLD, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffc45c98330) = 0
+write(1, "sup!\n", 5)                   = 5
+kill(3457, SIGURG)                      = 0
+rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
+rt_sigaction(SIGCHLD, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffc45c98330) = 0
+write(1, "sup!\n", 5)                   = 5
+kill(3457, SIGURG)                      = 0
+rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
+rt_sigaction(SIGCHLD, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffc45c98330) = 0
+write(1, "sup!\n", 5)                   = 5
+kill(3457, SIGURG)                      = 0
+rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
+rt_sigaction(SIGCHLD, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+nanosleep({tv_sec=1, tv_nsec=0}, 0x7ffc45c98330) = 0
+write(1, "sup!\n", 5)                   = 5
+kill(3457, SIGURG)                      = 0
+--- SIGINT {si_signo=SIGINT, si_code=SI_USER, si_pid=3457, si_uid=1000} ---
+wait4(-1, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 3457
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3457, si_uid=1000, si_status=0, si_utime=501 /* 5.01 s */, si_stime=0} ---
 exit_group(0)                           = ?
 +++ exited with 0 +++
-

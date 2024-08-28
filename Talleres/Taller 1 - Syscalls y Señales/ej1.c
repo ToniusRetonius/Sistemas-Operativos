@@ -5,17 +5,16 @@
 #include <sys/wait.h>
 #include <time.h>
 
+// LAS GLOBALES NO SON MEMORIA COMPARTIDA!!!!
+
 // las globales
-// se declaran globales porque sino no hay forma de que los hijos sepan los valores de N,K,J
 int N, K, J;
 
 // los inicializamos en 10 porque por consigna no es mayor a 10 N
-
 // en pids nos guardamos los pids para poder después avisar uno por uno
 int pids[10];
 
 // en pids_vivos guardamos 1 si está vivo y 0 si está muerto (inician todos muertos)
-// esta implementación es medio hardcodeada pero tal vez sirva
 int pids_vivos[10] = {0};
 
 
@@ -31,21 +30,30 @@ void sigterm_handler(int signal){
 	// si es = al maldito
 	if (random == J)
 	{
-		// busca su pid, y marca en pids_vivos, muerto
-		pid_t pid = getpid();
-
-		for (int i = 0; i < N; i++)
-		{
-			if (pids[i] == pid)
-			{
-				pids_vivos[i] = 0;
-				break;
-			}
-		}
-
+		// imprime
 		printf("Estas son mis últimas palabras\n");
-		// termina
+		// termina y esto manda un SICHLD al padre que captura en un handler
 		exit(0);
+	}
+	
+}
+
+void sigchld_handler(int signal){
+	//
+	printf("Murió un niño!\n");
+
+	// capturamos el pid del hijo que acaba de morir
+	int* pid_;
+	pid_t pid_hijo = wait(pid_);
+
+	// recorremos pids ,lo encontramos y luego con el índice modificamos el valor en pids_vivos
+	for (int i = 0; i < N; i++)
+	{
+		if (pids[i] == pid_hijo)
+		{
+			// seteamos en cero su vida
+			pids_vivos[i] = 0;
+		}
 	}
 	
 }
@@ -99,8 +107,11 @@ int main(int argc, const char* argv[]){
 			
 			// esperamos 1 segundo
 			sleep(1);
+
+			signal(SIGCHLD, sigchld_handler);
 		}	
 	}
+
 
 	// el padre busca en pids_vivos aquellos vivos, y los mata
 	for (int l = 0; l < N; l++)
@@ -115,5 +126,7 @@ int main(int argc, const char* argv[]){
 		}
 		
 	}
-	
+
+	// termina su ejecución;
+	exit(0);
 }
