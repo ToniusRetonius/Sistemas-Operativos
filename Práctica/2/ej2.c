@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-enum {READ, WRITE}
+enum {READ, WRITE};
 
 // la idea de este ejercicio es conectar los extremos del pipe
 
@@ -19,7 +19,7 @@ void ejecutar_hijo_2(int pipe_fd){
 	// nos interesa cerrar el pipe heredado porque no lo va a escribir wc
 	close(pipe_fd[WRITE]);
 	// queremos que escriba en la punta de lectura
-	dup2(pipe_fd[READ], STDOUT_FILENO]);
+	dup2(pipe_fd[READ], STDOUT_FILENO);
 	execlp("wc", "wc", "-l", NULL);
 }
 
