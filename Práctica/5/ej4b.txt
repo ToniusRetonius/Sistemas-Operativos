@@ -1,0 +1,2 @@
+// no se resetea el counter y eso es un problema
+// cambia el estado de las variables al inicio de las distintas iteraciones

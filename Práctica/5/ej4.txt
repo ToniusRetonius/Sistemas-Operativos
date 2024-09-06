@@ -1,0 +1,22 @@
+
+barrera = sem(0)
+mutex = sem(1)
+int counter = 0
+
+proceso_estudiante()
+	implementarTp()
+	
+	mutex.wait()
+	counter++
+	
+	if ( counter == n) : barrera.signal(n)
+
+	mutex.signal()
+	
+	barrera.wait()
+	
+	experimentar()
+
+// la idea de esta implentacion es que el último avisa a todos (barrera.signal(n) 
+
+// fijarse la implementación de barrera.signal que hace un for n veces avisando
