@@ -17,6 +17,8 @@ void hijo_distinguido(int c, int n, int pipe_padre_hijo[], int pipes_anillo[][2]
 	int nro_secreto = generate_random_number();
 	while (nro_secreto < c) nro_secreto = generate_random_number();
 
+	printf("El nro secreto es %i \n", nro_secreto);
+
 	// incia el ciclo, sumando 1 a c, escribiendo en el pipe
 	int primer_escritura = c + 1;
 	int e = write(pipes_anillo[(indice + 1) % n][PIPE_WRITE], &primer_escritura, sizeof(int));
@@ -27,7 +29,7 @@ void hijo_distinguido(int c, int n, int pipe_padre_hijo[], int pipes_anillo[][2]
 		// cerramos todas las refencias heredadas que no usamos
 		int sucesor = (indice + 1) % n;
 		int precesor = (indice - 1) % n;
-		if (j != indice || j != sucesor || j != precesor)
+		if (j != indice && j != sucesor && j != precesor)
 		{
 			close(pipes_anillo[j][PIPE_WRITE]);
 			close(pipes_anillo[j][PIPE_READ]);
@@ -67,7 +69,7 @@ void hijo_comun(int n, int indice, int pipes_anillo[][2]){
 		// cerramos todas las refencias heredadas que no usamos
 		int sucesor = (indice + 1) % n;
 		int precesor = (indice - 1) % n;
-		if (j != indice || j != sucesor || j != precesor)
+		if (j != indice && j != sucesor && j != precesor)
 		{
 			close(pipes_anillo[j][PIPE_WRITE]);
 			close(pipes_anillo[j][PIPE_READ]);
