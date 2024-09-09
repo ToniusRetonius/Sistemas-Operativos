@@ -30,18 +30,10 @@ typedef char*** matrix;
 
 void hijo(int i, int pipes[][2],int n, char** instruccion){
 	// cerramos todos los pipes que no se usan!
-	for (size_t j = 0; j < n; j++)
+	for (int j = 0; j < n; j++)
 	{
-		if (j == i){
-			// para el hijo en el que estoy parado me interesa cerrar el de escritura del pipe anterior porque no voy a escribir ahí
-			// y tampoco voy a leer del que me conecta con el siguiente
-			// mantengo leer del pipe que me conecta con mi anterior y escribir en mi siguiente
-			close(pipes[i-1][PIPE_WRITE]);
-			close(pipes[i+1][PIPE_READ]);
-		}
-		// cerramos todas las referencias heredadas que no usamos
-		close(pipes[j][PIPE_WRITE]);
-		close(pipes[j][PIPE_READ]);
+		if (j != i - 1) close(pipes[j][PIPE_READ]);
+        if (j != i) close(pipes[j][PIPE_WRITE]);
 	}
 
 	if(i == 0){
@@ -50,11 +42,11 @@ void hijo(int i, int pipes[][2],int n, char** instruccion){
 
 	}else if(i == n-1)
 	{
-		dup2(STD_OUTPUT, pipes[i-1][PIPE_WRITE]);
+		dup2(pipes[i-1][PIPE_READ], STD_INPUT);
 	}else
 	{
 		dup2(pipes[i-1][PIPE_READ], STD_INPUT);
-		dup2(pipes[i+1][PIPE_WRITE], STD_OUTPUT);
+		dup2(pipes[i][PIPE_WRITE], STD_OUTPUT);
 	}
 	
 	execvp(instruccion[0], instruccion);
