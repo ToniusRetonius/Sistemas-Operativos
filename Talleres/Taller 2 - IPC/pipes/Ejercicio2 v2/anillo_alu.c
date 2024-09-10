@@ -14,8 +14,7 @@ int generate_random_number(){
 // el hijo distinguido recibe el nro c, la cantidad de procesos en el anillo, la referencia la pipe con el cual se comunica con el padre y todas las referencias a todos los pipes y su índice para saber cómo comunicarse
 void hijo_distinguido(int c, int n, int pipe_padre_hijo[], int pipes_anillo[][2], int indice){
 	// genera el nro secreto, debe ser estrictamente mayor a 'c'
-	int nro_secreto = generate_random_number();
-	while (nro_secreto < c) nro_secreto = generate_random_number();
+	int nro_secreto = generate_random_number() + c;
 
 	printf("El nro secreto es %i \n", nro_secreto);
 
@@ -24,17 +23,17 @@ void hijo_distinguido(int c, int n, int pipe_padre_hijo[], int pipes_anillo[][2]
 	int e = write(pipes_anillo[(indice + 1) % n][PIPE_WRITE], &primer_escritura, sizeof(int));
 
 	// ------------------------------ close -----------------------------
-	for (int j = 0; j < n; j++)
-	{
-		// cerramos todas las refencias heredadas que no usamos
-		int sucesor = (indice + 1) % n;
-		int precesor = (indice - 1) % n;
-		if (j != indice && j != sucesor && j != precesor)
-		{
-			close(pipes_anillo[j][PIPE_WRITE]);
-			close(pipes_anillo[j][PIPE_READ]);
-		}
-	}
+	// for (int j = 0; j < n; j++)
+	// {
+	// 	// cerramos todas las refencias heredadas que no usamos
+	// 	int sucesor = (indice) % n;
+	// 	int precesor = (indice - 1) % n;
+	// 	if (j != indice && j != sucesor && j != precesor)
+	// 	{
+	// 		close(pipes_anillo[j][PIPE_WRITE]);
+	// 		close(pipes_anillo[j][PIPE_READ]);
+	// 	}
+	// }
 	// ------------------------------ close -----------------------------
 
 	// una vez iniciado el ciclo, ya podemos quedarnos esperando la lectura del proceso antecesor
@@ -42,7 +41,9 @@ void hijo_distinguido(int c, int n, int pipe_padre_hijo[], int pipes_anillo[][2]
 	{
 		// lectura del antecesor
 		int lectura;
-		int l = read(pipes_anillo[(indice - 1) % n][PIPE_READ], &lectura, sizeof(int));
+		int l = read(pipes_anillo[(indice - 1 + n) % n][PIPE_READ], &lectura, sizeof(int));
+
+		printf("Lectura, %i\n", lectura);
 
 		// chequeamos si es mayor o igual al nro secreto
 		if (lectura >= nro_secreto)
@@ -84,6 +85,7 @@ void hijo_comun(int n, int indice, int pipes_anillo[][2]){
 		int lectura;
 		int l = read(pipes_anillo[(indice - 1) % n][PIPE_READ], &lectura, sizeof(int));
 
+		printf("SOy el hijo %i : Lectura, %i\n", indice, lectura);
 		// incrementa
 		lectura++;
 
@@ -125,9 +127,6 @@ int main(int argc, char **argv)
 	{
 		pid_t pid = fork();
 		
-		// capturamos el pid
-		pids[j] = pid;
-		
 		if(pid == -1)exit(1);
 		else if (pid == 0)
 		{
@@ -143,6 +142,8 @@ int main(int argc, char **argv)
 			}
 			
 		}
+		// capturamos el pid
+		pids[j] = pid;
 		
 	}
     printf("Se crearán %i procesos, se enviará el caracter %i desde proceso %i \n", n, buffer, start);
