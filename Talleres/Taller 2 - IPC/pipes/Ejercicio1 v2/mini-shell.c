@@ -50,6 +50,9 @@ void hijo(int i, int pipes[][2],int n, char** instruccion){
 	}
 	
 	execvp(instruccion[0], instruccion);
+
+	// esto nunca se ejecuta
+	printf("Hola mundo");
 }
 
 
@@ -58,8 +61,8 @@ static int run(matrix progs, size_t count)
 {	
 	int r, status;
 	
-
 	//TODO: Pensar cuantos pipes necesito.
+	// el último no se usa (podríamos poner count - 1)
 	int pipes_hijos[count][2];
 	for (int i = 0; i < count; i++)
 	{

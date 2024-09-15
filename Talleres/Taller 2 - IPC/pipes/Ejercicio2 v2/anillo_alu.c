@@ -14,26 +14,19 @@ int generate_random_number(){
 // el hijo distinguido recibe el nro c, la cantidad de procesos en el anillo, la referencia la pipe con el cual se comunica con el padre y todas las referencias a todos los pipes y su índice para saber cómo comunicarse
 void hijo_distinguido(int c, int n, int pipe_padre_hijo[], int pipes_anillo[][2], int indice){
 	// genera el nro secreto, debe ser estrictamente mayor a 'c'
-	int nro_secreto = generate_random_number() + c;
+	int nro_secreto = (generate_random_number() + c);
 
 	printf("El nro secreto es %i \n", nro_secreto);
 
+	printf("Soy el hijo distinguido y mi padre me mandó : %i\n", c);
 	// incia el ciclo, sumando 1 a c, escribiendo en el pipe
 	int primer_escritura = c + 1;
-	int e = write(pipes_anillo[(indice + 1) % n][PIPE_WRITE], &primer_escritura, sizeof(int));
+	int e = write(pipes_anillo[(indice) % n][PIPE_WRITE], &primer_escritura, sizeof(int));
+	printf("Soy el hijo distinguido y mi primer escritura es : %i\n", primer_escritura);
+	
 
 	// ------------------------------ close -----------------------------
-	// for (int j = 0; j < n; j++)
-	// {
-	// 	// cerramos todas las refencias heredadas que no usamos
-	// 	int sucesor = (indice) % n;
-	// 	int precesor = (indice - 1) % n;
-	// 	if (j != indice && j != sucesor && j != precesor)
-	// 	{
-	// 		close(pipes_anillo[j][PIPE_WRITE]);
-	// 		close(pipes_anillo[j][PIPE_READ]);
-	// 	}
-	// }
+
 	// ------------------------------ close -----------------------------
 
 	// una vez iniciado el ciclo, ya podemos quedarnos esperando la lectura del proceso antecesor
@@ -43,7 +36,7 @@ void hijo_distinguido(int c, int n, int pipe_padre_hijo[], int pipes_anillo[][2]
 		int lectura;
 		int l = read(pipes_anillo[(indice - 1 + n) % n][PIPE_READ], &lectura, sizeof(int));
 
-		printf("Lectura, %i\n", lectura);
+		printf("Soy el hijo distinguido y mi lectura es, %i\n", lectura);
 
 		// chequeamos si es mayor o igual al nro secreto
 		if (lectura >= nro_secreto)
@@ -57,7 +50,8 @@ void hijo_distinguido(int c, int n, int pipe_padre_hijo[], int pipes_anillo[][2]
 
 		// caso contrario :  inicia otra ronda
 		lectura++;
-		int e = write(pipes_anillo[(indice + 1) % n][PIPE_WRITE], &lectura, sizeof(int)); 
+		int e = write(pipes_anillo[(indice) % n][PIPE_WRITE], &lectura, sizeof(int)); 
+		printf("Soy el hijo distinguido y le escribo, %i\n", lectura);
 	}
 }
 
@@ -68,13 +62,20 @@ void hijo_comun(int n, int indice, int pipes_anillo[][2]){
 	for (int j = 0; j < n; j++)
 	{
 		// cerramos todas las refencias heredadas que no usamos
-		int sucesor = (indice + 1) % n;
-		int precesor = (indice - 1) % n;
-		if (j != indice && j != sucesor && j != precesor)
+		if (j == (indice - 1 + n) % n)
 		{
 			close(pipes_anillo[j][PIPE_WRITE]);
-			close(pipes_anillo[j][PIPE_READ]);
 		}
+		else if (j == indice)
+		{
+			close(pipes_anillo[j][PIPE_READ]);
+			
+		}else{
+			close(pipes_anillo[j][PIPE_READ]);
+			close(pipes_anillo[j][PIPE_WRITE]);
+		}
+
+		
 	}
 	// ------------------------------ close -----------------------------
 	
@@ -83,14 +84,15 @@ void hijo_comun(int n, int indice, int pipes_anillo[][2]){
 	{
 		// lectura
 		int lectura;
-		int l = read(pipes_anillo[(indice - 1) % n][PIPE_READ], &lectura, sizeof(int));
+		int l = read(pipes_anillo[(indice - 1 + n) % n][PIPE_READ], &lectura, sizeof(int));
 
-		printf("SOy el hijo %i : Lectura, %i\n", indice, lectura);
+		printf("Soy el hijo %i : Lectura, %i\n", indice, lectura);
 		// incrementa
 		lectura++;
 
 		// reescribe
-		int e = write(pipes_anillo[(indice + 1) % n][PIPE_WRITE], &lectura, sizeof(int));
+		int e = write(pipes_anillo[(indice) % n][PIPE_WRITE], &lectura, sizeof(int));
+		printf("Soy el hijo %i : y voy a escribir : %i\n", indice, lectura);
 	}
 }
 
@@ -147,6 +149,13 @@ int main(int argc, char **argv)
 		
 	}
     printf("Se crearán %i procesos, se enviará el caracter %i desde proceso %i \n", n, buffer, start);
+
+	for (int j = 0; j < n; j++)
+	{
+		close(pipes_anillo[j][PIPE_READ]);
+		close(pipes_anillo[j][ PIPE_WRITE]);
+	}
+	
     
     /* COMPLETAR */
     // cuando el hijo distinguido recibe el valor que es mayor o igual a 'c'
@@ -155,6 +164,8 @@ int main(int argc, char **argv)
 	int l = read(pipe_padre_hijo[PIPE_READ], &lectura, sizeof(int));
 	printf("%i \n", lectura);
 
+	sleep(10);
+	
 	// tenemos que matar a todos los hijos
 	for (int i = 0; i < n; i++)
 	{
