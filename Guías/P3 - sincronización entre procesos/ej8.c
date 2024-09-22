@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <unistd.h>
+#include <semaphore.h>
 
 // En el ejercicio 8 nos piden según el caso, escrbir el código que permita la ejecución de los procesos de la forma planteada usando SEMÁFOROS
 
-#include <semaphore.h>
 
 // 1 ) Procesos A, B y C :
 // orden :  A - B - C - A - B - C ....

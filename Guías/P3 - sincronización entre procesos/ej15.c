@@ -1,9 +1,3 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <stdio.h>
-
 int cant_especies = n;
 
 // una puerta por especie, dos colas por el sexo

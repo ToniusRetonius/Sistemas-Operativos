@@ -1,9 +1,3 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <stdio.h>
-
 // tenemos N mesas con capacidad : 4
 // se llenan en orden a medida que llega la gente
 // cuando el nro de personas en la mesa es 4 => se invoca JUGAR()

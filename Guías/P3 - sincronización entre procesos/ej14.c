@@ -1,9 +1,3 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <stdio.h>
-
 // cantidad de gente dentro
 int cant_gente;
 sem_t sem_gente;

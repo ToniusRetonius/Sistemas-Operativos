@@ -1,9 +1,3 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <stdio.h>
-
 #define N 100
 
 // cantidad de prendas en el lavarropas

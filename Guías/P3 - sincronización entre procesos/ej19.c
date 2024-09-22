@@ -1,10 +1,3 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <time.h>
-
 // dos babuinos no se pueden encontrar yendo en direcciones opuestas
 // la cuerda soporta 5 nomás
 // se garantiza que si comenzó a caminar, llega al otro lado

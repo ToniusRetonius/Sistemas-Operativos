@@ -1,10 +1,3 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
-
 #define n 100
 
 // el + 1 es para que siepre se avise a la siguiente y no tengamos que manejar el último caso con un if 
