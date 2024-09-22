@@ -9,7 +9,6 @@ void pong_handler(int signal){
 	printf("PONG\n");
 }
 
-
 int main(int argc, const char* argv[]){
 	pid_t pid = fork();
 	if (pid == -1)exit(EXIT_FAILURE);
