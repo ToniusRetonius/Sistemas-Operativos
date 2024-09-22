@@ -1,12 +1,11 @@
 int cant_especies = n;
-
 // una puerta por especie, dos colas por el sexo
-sem_t puertas[cant_especies][2];
+semaforo puertas[cant_especies][2];
 
 for (int j = 0; j < n; j++)
 {
-    puertas[j][0] = 0;
-    puertas[j][1] = 0;
+    puertas[j][0] = sem(0);
+    puertas[j][1] = sem(0);
 }
 
 
