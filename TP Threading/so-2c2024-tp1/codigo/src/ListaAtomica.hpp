@@ -31,6 +31,18 @@ class ListaAtomica {
 
     void insertar(const T &valor) {
         // Completar (Ejercicio 1)
+        // nuevo
+        Nodo* nuevo = new Nodo(valor);
+        // asignamos al siguiente de nuevo la cabeza
+        nuevo->_siguiente = _cabeza.load();
+        // bool compare_exchange_weak(T& expected, T desired, std::memory_order success = std::memory_order_seq_cst, std::memory_order failure = std::memory_order_seq_cst);
+        while (!_cabeza.compare_exchange_weak(nuevo->_siguiente, nuevo))
+        {
+            // esto es vacío, la función devuelve un bool dependiendo si pudo actualizar o no el valor de la cabeza de la lista
+            // recordar que hay muchos threads que intentan tal vez modificar esta cabeza. Por ello, la función busca actualizar el valor expected con desired
+            // por tanto mientras la función no logre actualizar los valores, continuará intentando a lo bucle inf
+            // cuando logra actualizar devuelve true y por el uso de ! se rompe la condición de ciclo y termina la función
+        }
     }
 
     T& operator[](size_t i) const {
