@@ -27,8 +27,6 @@ void multiplicar_concurrente(iterator v1_begin, iterator v1_end, iterator v2_beg
     
 }
 
-
-
 void verify(vector<int> v1, vector<int> v2, vector<int> v3) {
     cout << "v1 = [" << v1[0] << ", " << v1[1] << ", " << ", ..., " << v1[N - 2] << ", " << v1[N - 1] << "]" << endl;
     cout << "v2 = [" << v2[0] << ", " << v2[1] << ", " << ", ..., " << v2[N - 2] << ", " << v2[N - 1] << "]" << endl;
