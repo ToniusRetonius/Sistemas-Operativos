@@ -296,7 +296,9 @@ struct Ext2FSInode * Ext2FS::load_inode(unsigned int inode_number)
 	// paso 4 : sacarle el índice en la INODE TABLE 
 	unsigned int indice = blockgroup_inode_index(inode_number);
 
-	// paso 5 : qué tan grande es el bloque ? 1024 es la medida base
+	// paso 5 : qué tan grande es el bloque ? 
+	// se calcula así porq el tam de bloque puede ser 1KB (1024 * 1), 2KB (1024 * 2)
+	// recordar que  log_block_size es log base 2 del tam del bloque. 1024 es base
 	unsigned int tam_bloque = 1024 << _superblock->log_block_size; 
 
 	// paso 6 : cuántos inodos entran en un bloque ? 
@@ -346,7 +348,6 @@ unsigned int Ext2FS::get_block_address(struct Ext2FSInode * inode, unsigned int 
 		unsigned int res;
 
 		// indirecto simple
-		
 		// la cantidad de punteros que tiene este será...
 		unsigned int limite_indirecto_simple = _superblock->log_block_size / sizeof(unsigned int);
 		
@@ -362,10 +363,13 @@ unsigned int Ext2FS::get_block_address(struct Ext2FSInode * inode, unsigned int 
 			read_block(dire_bloque_indirectos_simple, lectura);
 
 			// indexamos adecuadamente (recordar que del 12 en adelante está en los indirectos, en esta caso cae en el simple)
-			unsigned int indice = block_number - 12;
+			unsigned int primero = block_number - 12;
 
 			// res = a ese punterito
-			res = lectura[indice];
+			res = lectura[primero];
+
+			// liberamos memoria
+			delete[] lectura;
 		}
 		// indirecto doble
 		else
@@ -376,11 +380,27 @@ unsigned int Ext2FS::get_block_address(struct Ext2FSInode * inode, unsigned int 
 			// declaramos el buffer 
 			unsigned char* lectura = (unsigned char*) malloc(1024 << _superblock->log_block_size);
 			
-			// traemos la tabla de punteros
+			// traemos el bloque de punteros
 			read_block(dire_bloque_indirectos_doble, lectura);
 
-			// tenemos que iterar y ver en qué entrada cae ? 
+			// nos traemos el bloque apuntado por el primer puntero
+			unsigned int primero = block_number - limite_indirecto_simple;
+
+			// dire y lectura del primero de la segunda tabla
+			unsigned int dire_bloque_apuntado_primer_puntero = ((unsigned int*) lectura)[primero];
+			read_block(dire_bloque_apuntado_primer_puntero, lectura);
+
+			// cuánto nos movemos ?
+			unsigned int offset = primero % _superblock->inode_size;
+
+			// res
+			res = lectura[offset];	
+			
+			// liberamos memoria
+			delete[] lectura;
 		}
+		// ret
+		return res;
 	}
 }
 
