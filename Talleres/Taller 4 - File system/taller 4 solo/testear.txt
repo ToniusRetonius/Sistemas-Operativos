@@ -1,0 +1,5 @@
+// para correr el ejercicio 
+	- vamos a /test
+	- (en caso de necesitar descomprimir) unxz hdd.raw.xz
+	- hacemos 'make'
+	- ./testhdd hdd.raw

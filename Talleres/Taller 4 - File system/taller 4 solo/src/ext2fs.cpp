@@ -363,10 +363,10 @@ unsigned int Ext2FS::get_block_address(struct Ext2FSInode * inode, unsigned int 
 			read_block(dire_bloque_indirectos_simple, lectura);
 
 			// indexamos adecuadamente (recordar que del 12 en adelante está en los indirectos, en esta caso cae en el simple)
-			unsigned int primero = block_number - 12;
+			unsigned int dire_bloque = block_number - 12;
 
 			// res = a ese punterito
-			res = lectura[primero];
+			res = ((unsigned int*)lectura)[dire_bloque];
 
 			// liberamos memoria
 			delete[] lectura;
@@ -394,12 +394,12 @@ unsigned int Ext2FS::get_block_address(struct Ext2FSInode * inode, unsigned int 
 			unsigned int offset = primero % _superblock->inode_size;
 
 			// res
-			res = lectura[offset];	
+			res = ((unsigned int*)lectura)[offset];	
 			
 			// liberamos memoria
 			delete[] lectura;
 		}
-		// ret
+		// casteamos a un unsigned int
 		return res;
 	}
 }
@@ -417,9 +417,62 @@ struct Ext2FSInode * Ext2FS::get_file_inode_from_dir_inode(struct Ext2FSInode * 
 	if(from == NULL)
 		from = load_inode(EXT2_RDIR_INODE_NUMBER);
 	//std::cerr << *from << std::endl;
-	assert(INODE_ISDIR(from));
+	assert(INODE_ISDIR(from));	
 
-	// TODO : ejercicio 3	
+	// paso 1 : buffer del primer bloque lleno de dir-entries apuntado por el primer puntero 
+	unsigned char* lectura_bloque = (unsigned char*) malloc (1024 << _superblock->log_block_size);
+
+	// paso 2 : contador de bloque
+	int bloque = 0;
+
+	// paso 3 : dire bloque
+	unsigned int dire_bloque = get_block_address(from,bloque);
+
+	// paso 4 : lectura bloque
+	read_block(dire_bloque, lectura_bloque);
+
+	// paso 5 : definimos el índice del dir entry (que como ex variable se actualiza variablemente)
+	unsigned int offset = 0;
+
+	// paso 6 : condición de ciclo ( cuántos bloques tiene el directorio ?)
+	unsigned int bloque_max = from->size / (1024 << _superblock->log_block_size);
+
+	// paso 6 : ciclo
+	while (bloque < bloque_max)
+	{
+		// paso 7 : decidir si pasamos al siguiente bloque
+		if (offset > (1024 << _superblock->log_block_size))
+		{
+			// nuevo bloque
+			bloque++;
+
+			// actualizar el valor de offset
+			offset -= (1024 << _superblock->log_block_size);
+
+			// cargamos el bloque
+			dire_bloque = get_block_address(from, bloque);
+			read_block(dire_bloque, lectura_bloque);
+		}
+
+		// paso 8 : nos traemos el dir entry actual
+		Ext2FSDirEntry* dir_entry_actual = ((Ext2FSDirEntry*)lectura_bloque + offset);
+
+		// paso 9 : por la estructura del dir-entry tenemos unsigned char name_length; y char name[];
+		if (strlen(filename) == dir_entry_actual->name_length && !strncmp(filename, dir_entry_actual->name, strlen(filename)))
+		{
+			// liberamos memo
+			delete[] lectura_bloque;
+			// final : si encontramos el archivo, le cargamos el inodo unsigned int inode;
+			return load_inode(dir_entry_actual->inode);
+		}
+		
+		// paso 10 : en caso de que no sea el dir_entry ==> pasamos al siguiente modificando el índice con unsigned short record_length;
+		offset += dir_entry_actual->record_length;
+
+	}
+
+	// si no lo encuentra ==>
+	return NULL;
 }
 
 fd_t Ext2FS::get_free_fd()
