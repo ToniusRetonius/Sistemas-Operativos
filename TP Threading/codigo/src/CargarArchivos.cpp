@@ -7,10 +7,8 @@
 
 #include "CargarArchivos.hpp"
 
-int cargarArchivo(
-    HashMapConcurrente &hashMap,
-    std::string filePath
-) {
+int cargarArchivo( HashMapConcurrente &hashMap, std::string filePath) 
+{
     std::fstream file;
     int cant = 0;
     std::string palabraActual;
@@ -36,11 +34,8 @@ int cargarArchivo(
 }
 
 
-void cargarMultiplesArchivos(
-    HashMapConcurrente &hashMap,
-    unsigned int cantThreads,
-    std::vector<std::string> filePaths
-) {
+void cargarMultiplesArchivos(HashMapConcurrente &hashMap, unsigned int cantThreads, std::vector<std::string> filePaths) 
+{
     // Completar (Ejercicio 4)
 }
 

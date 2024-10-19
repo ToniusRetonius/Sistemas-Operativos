@@ -3,6 +3,7 @@
 #include <vector>
 #include <numeric>
 #include <iterator>
+#include <atomic>
 
 #define RR 3
 #define CC 3

@@ -15,7 +15,7 @@ class ListaAtomica {
     };
 
     std::atomic<Nodo *> _cabeza;
-
+    
  public:
     ListaAtomica() : _cabeza(nullptr) {}
 
@@ -29,8 +29,8 @@ class ListaAtomica {
         }
     }
 
+    // EJERCICIO 1 : insertar un valor en la Lista Atómica
     void insertar(const T &valor) {
-        // Completar (Ejercicio 1)
         // nuevo
         Nodo* nuevo = new Nodo(valor);
         // asignamos al siguiente de nuevo la cabeza

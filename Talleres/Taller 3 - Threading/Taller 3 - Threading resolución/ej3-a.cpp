@@ -3,6 +3,7 @@
 #include <vector>
 #include <numeric>
 #include <iterator>
+#include <cassert>
 
 #define N 100
 #define THREAD_COUNT 5
