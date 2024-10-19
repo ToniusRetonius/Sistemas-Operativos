@@ -6,6 +6,8 @@
 #include <fstream>
 #include <vector>
 #include <mutex>
+#include <thread>
+#include <atomic>
 
 #include "HashMapConcurrente.hpp"
 using namespace std;
@@ -23,10 +25,13 @@ unsigned int HashMapConcurrente::hashIndex(std::string clave) {
 
 void HashMapConcurrente::incrementar(std::string clave) {
     // capturamos el índice de la hash table 
-    unsigned int hash = hashIndex(clave);
+    int hash = hashIndex(clave);
     
     // pedimos el mutex
     mutex_indices_hashtable[hash].lock();
+
+    // existencia
+    bool existe = false;
 
     // recorremos el bucket en busca de la clave
     for (auto &producto : *tabla[hash])
@@ -35,12 +40,17 @@ void HashMapConcurrente::incrementar(std::string clave) {
         if (producto.first == clave)
         {
             producto.second++;
+            existe = true;   
         }
     }
 
-    // si llegamos hasta acá es porque no estaba el par
-    hashMapPair nuevo = hashMapPair(clave, 1);
-    tabla[hash]->insertar(nuevo);
+
+    if (!existe)
+    {
+        // si llegamos hasta acá es porque no estaba el par
+        hashMapPair nuevo = hashMapPair(clave, 1);
+        tabla[hash]->insertar(nuevo);
+    }
 
     // liberamos
     mutex_indices_hashtable[hash].unlock();
@@ -125,111 +135,80 @@ float HashMapConcurrente::promedio() {
     return promedio;        
 }
 
-// definimos una función que dado un intervalo de buckets, calcule el promedio
-void HashMapConcurrente::promedio_por_intervalo_hash(vector<unsigned int> claves, float& prom) {
-    // promedios
-    vector<float> promedios(claves.size());
-
-    for(size_t i = 0; i < claves.size(); i++)
+// definimos una función que dado un bucket, devuelva la cantidad de productos de ese bucket y cuánto suma
+void HashMapConcurrente::promedio_por_bucket(vector<pair<int,int>>& vector_resultados, atomic<int>& nro_fila) {
+    // siempre chequeando una fila para hacerle el promedio
+    while (true)
     {
-        unsigned int hash = claves[i];
-        // bloqueamos todo el bucket
-        mutex_indices_hashtable[hash].lock();
+        // condición : chequear el atomic<int> que define el nro de fila
+        int fila = nro_fila.fetch_add(1);
 
-        float sum = 0.0;
-        unsigned int count = 0;
+        // si se indefine ==> break
+        if(fila >= HashMapConcurrente::cantLetras) break;
 
-        for (const auto& p : *tabla[hash]) {
-            sum += p.second;
-            count++;
-        }
+        // pido el mutex
+        mutex_indices_hashtable[fila].lock();
 
-        float promedio;
-        if (count > 0) {
-            promedio = sum / count;
-        }else
+        // res < elementos diferentes, cantidad de elementos totales>
+        pair<int, int> resultados = make_pair(0,0);
+
+        //
+        for (auto &producto : *tabla[fila])
         {
-            promedio = 0;
+            resultados.first++;
+            resultados.second += producto.second;
         }
 
-        // pusheamos el promedio de este bucket
-        promedios[i] = promedio;
+        // libero
+        mutex_indices_hashtable[fila].unlock();
 
-        // liberamos el mutex
-        mutex_indices_hashtable[hash].unlock();
-    }
-    
-    // procesamos todos los promedios y devolvemos un valor 
-    int total = 0;
-    for (size_t i = 0; i < promedios.size(); i++)
-    {
-        total += promedios[i];
-    }
-    prom = total/ (float)promedios.size();
+        // modificamos el vector de resultados 
+        
+        vector_resultados[fila] = resultados;
+    }      
 }
 
+
 float HashMapConcurrente::promedioParalelo(unsigned int cant_threads) {
+    // declaramos el nro de fila como un atomic int
+    atomic<int> nro_fila(0);
 
-    // vector de promedios
-    vector<float> promedios_por_thread(cant_threads, 0.0);
+    // vector de resultados de la forma <cantidad de objetos, nro total de objetos por bucket>
+    vector<pair<int,int>> vector_resultados(HashMapConcurrente::cantLetras, make_pair(0,0));
 
-    // vector de threads
-    vector<thread> threads(cant_threads);
+    // hilos
+    vector<thread> threads;
 
-    // res
-    float promedio = 0;
-
-    // qué pasa si la cantidad de THREADS es menor que la CANT DE LETRAS ? Divido los buckets entre la #threads que tengo ?   
-    // distribuimos los buckets
-    int buckets_por_thread = cantLetras / cant_threads;
-    int resto = cantLetras % cant_threads;
-
-    // vector de claves
-    vector<string> letras = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
-
-    // lanzamos los threads
     for (unsigned int i = 0; i < cant_threads; i++)
     {
-        // definimos en qué bucket inicia
-        int inicio = i * buckets_por_thread;
-
-        // definimos dónde deja de procesar
-        int fin = inicio + buckets_por_thread;
-
-        // si sobran valores, se los pasamos al primer thread
-        if (resto > 0)
-        {
-            fin += resto;
-            resto = 0;
-        }    
-
-        // le pasamos el vector de claves
-        vector<unsigned int> vector_claves;
-        for (int i = inicio; i < fin; i++)
-        {
-            vector_claves.push_back(hashIndex(letras[i]));
-        }
-        
-        // lanzamos los threads
-        // la función thread lanza unn thread y necesita saber qué va a ejecutar como puntero, en este caso de la clase HashMapConcurrente el método prom_p_intervalo
-        // necesita además saber a qué instancia de la clase va a acceder, por eso 'this'
-        // se le pasa el parámetro de la función
-        // ref es una función onda wrapper que lo que hace es pasarle por referencia al hilo lo que queremos que modifique ( como no hay race condition, no metemos un mutex, sino habría que pasarle) 
-        threads[i] = thread(&HashMapConcurrente::promedio_por_intervalo_hash, this, vector_claves, ref(promedios_por_thread[i]));
-    }
-
-    // bancamos que terminen
-    for (auto &t: threads) {
-        t.join();
-    }
-
-    // procesamos los promedios
-    for (size_t i = 0; i < promedios_por_thread.size(); i++)
-    {
-        promedio += promedios_por_thread[i];
+        // lanzamos los threads : 
+        // emplace_back en este contexto tomará como puntero al método de HashMapConcurrente promedio_po_bucket
+        // recibirá la instancia actual de la tabla de hash, una referencia al vector de resultados y una referencia al atomic int
+        threads.emplace_back(&HashMapConcurrente::promedio_por_bucket, this, std::ref(vector_resultados), std::ref(nro_fila));
     }
     
-    return promedio / (float)promedios_por_thread.size();
+    // apropiadamente esperamos que terminen
+    for(auto &th : threads) th.join();
+
+    // calculamos promedio de la forma tradicional
+    float sum = 0.0;
+    unsigned int count = 0;
+
+    for (auto &res : vector_resultados)
+    {
+        count += res.first;
+        sum += res.second;
+    }
+
+    float promedio;
+    if (count > 0) {
+        promedio = sum / count;
+    }else
+    {
+        promedio = 0;
+    }
+
+    return promedio; 
 }
 
 #endif

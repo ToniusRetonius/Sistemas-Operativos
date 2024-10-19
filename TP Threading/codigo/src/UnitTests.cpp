@@ -161,6 +161,18 @@ LT_BEGIN_TEST(TestsEjercicio3, PromedioEsCorrecto)
 LT_END_TEST(PromedioEsCorrecto)
 
 // Completar TEST para caso concurrente
+LT_BEGIN_TEST(TestsEjercicio3, PromedioParaleloCorrecto)
+    hM.incrementar("Heladera");
+    hM.incrementar("Heladera");
+    hM.incrementar("Heladera");
+    hM.incrementar("Heladera");
+    hM.incrementar("Microondas");
+    hM.incrementar("Microondas");
+
+    // le pasamos la #threads
+    float actual = hM.promedioParalelo(3);
+    LT_CHECK_EQ(actual, 3);
+LT_END_TEST(PromedioParaleloCorrecto)
 
 LT_BEGIN_SUITE(TestsEjercicio4)
 

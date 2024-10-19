@@ -27,7 +27,7 @@ class HashMapConcurrente {
    float promedio();
 
    // ejercicio 3b) agregamos como método al promedio por bucket como auxiliar para
-   void promedio_por_intervalo_hash(std::vector<unsigned int> claves, float& ref_al_promedio);
+   void promedio_por_bucket(std::vector<std::pair<int, int>>& vector_resultados, std::atomic<int>& nro_fila);
 
    // es la función que dada una #threads, procesa de forma paralela por bucket para obtener el promedio
    float promedioParalelo(unsigned int cant_threads);
