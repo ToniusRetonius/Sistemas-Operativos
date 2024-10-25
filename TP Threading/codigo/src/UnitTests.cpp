@@ -160,7 +160,7 @@ LT_BEGIN_TEST(TestsEjercicio3, PromedioEsCorrecto)
     LT_CHECK_EQ(actual, 3);
 LT_END_TEST(PromedioEsCorrecto)
 
-// Completar TEST para caso concurrente
+// TEST para caso concurrente :
 LT_BEGIN_TEST(TestsEjercicio3, PromedioParaleloCorrecto)
     hM.incrementar("Heladera");
     hM.incrementar("Heladera");

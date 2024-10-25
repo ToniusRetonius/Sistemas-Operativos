@@ -23,8 +23,8 @@ int cargarArchivo(HashMapConcurrente &hashMap, std::string filePath)
         std::cerr << "Error al abrir el archivo '" << filePath << "'" << std::endl;
         return -1;
     }
-    while (file >> palabraActual) {
-        // Completar (Ejercicio 4)
+    // por mail avisaron de la corrección : file >> palabraActual
+    while (getline(file, palabraActual)) {
         // si leemos una palabra es porque hay que agregarla al HashMapConcurrente
         hashMap.incrementar(palabraActual);
         cant++;
@@ -58,7 +58,6 @@ void cargar(HashMapConcurrente& hashmap, atomic<int>& archivo, std::vector<std::
 
 void cargarMultiplesArchivos(HashMapConcurrente &hashMap, unsigned int cantThreads, std::vector<std::string> filePaths) 
 {
-    // Completar (Ejercicio 4)
     // nos dan un montón de threads y files para cargar info al hashmap
     
     // qué archivo cargamos
