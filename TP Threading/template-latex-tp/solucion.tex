@@ -9,11 +9,11 @@
 \usepackage{makeidx}
 \usepackage{tocloft}
 \usepackage{hyperref}
+\usepackage{xcolor}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 \hypersetup{
     colorlinks=true,     
-    linkcolor=blue,     
-    citecolor=blue,     
-    urlcolor=blue        
+    linkcolor=black,         
 }
 
 \begin{document}
@@ -43,7 +43,16 @@
 
 % INTRODUCCIÓN
 \section{Introducción}\label{sec:intro}
-\text{}
+\text
+{
+En este informe se describirá el conjunto de soluciones logradas para implementar un \textbf{HashMapConcurrente}, una estructura de datos que consiste en una tabla de hash abierta que maneja las colisiones mediante listas enlazadas. La idea de esta implementación es gestionar la concurrencia y las condiciones de carrera en un contexto de órdenes de compra de una tienda. 
+\\
+El principal desafío entonces será, desarrollar una estructura capaz de mantener la consistencia de los datos aún en un contexto de alta concurrencia. Esto lo podremos garantizar con el uso de herramientas de sincronización como los semáforos y las variables atómicas.
+\\
+En cuanto a la lista enlazada que gestiona la colisión de los hashes, podemos decir que se modelará de manera que no haya \textbf{RaceCondition} y la denominaremos \textbf{ListaAtómica}. Esta lista resguardará cada producto que se inserte de forma que, incluso en un contexto de alta concurrencia, los datos guardados respondan a la información real sobre ellos.
+\\
+Finalmente, luego de satisfactoriamente implementar la estructura de datos antes presentada, haremos uso de ella para cargarle toda la información que devenga de los productos de la tienda. 
+}
 \newpage
 
 % DESARROLLO
@@ -100,9 +109,23 @@ Tuvimos en consideración la posibilidad de implementar un mutex para cada produ
 En el contexto de una tienda que vende sólo dos productos la concurrecia es vital al momento de que lleguen pedidos de compra o de incremento del stock. Por tanto, la contención será más pronunciada. Es vital implementar un modelo que evite race condition.\\
 En el caso de querer implementar la función calcularMedianaParalela, se optaría por implementar un algoritmo de sorting en el que cierta cantidad de threads tomarían la labor de ordenar los valores. Es decir, se capturarían todos los datos en un vector compartido, en el que los threads pushearían los valores y luego cada uno tomaría cierta partición para realizar el ordenamiento. MergeSortParalelo para el ordenamiento y finalmente, mirar el dato medio del vector ordenado ( en caso de ser par, sorted[medio - 1] + sorted[medio] / 2). 
 }
+\newpage
 
 \section{Tests}\label{sec:Tests}
 \subsection{Test : PromedioParalelo}\label{sec:test_pp}
+\text{La implementación de \textbf{PromedioParalelo} explota el uso de Threads para calcular el promedio. Esta es una clara función de programación paralela que para evitar conflictos de consistencia en los valores utiliza una variable atómica. El test está pensado para cumplir con las especificaciones de la consigna en las que se pide : "Cada thread procesará una fila de la tabla a la vez, en ningún momento debe haber threads inactivos y los mismos deben terminar su ejecución si y solo si ya no quedan filas por procesar". Esto se testea al pasar una cantidad muy alta en comparación a la cantidad de listas a explorar por thread. Resultando en : \\ \\}
+% imagen resultado test
+\includegraphics[width=0.7\textwidth]{Screenshot from 2024-10-25 19-59-13.png}
+\\
+
+\subsection{Test : CargarMúltipleArchivos}\label{sec:test_cma}
+\text{La implementación de \textbf{CargarMúltiplesArchivos} también implementa varios hilos de ejecución para cargarle a la tabla información contenida en archivos. La idea es análoga al caso de PromedioParalelo. En particular, los test apuntan a observar si el comportamiento que resulta de la concurrencia no concluye en condiciones de carrera. \\ \\}
+%imagen resultado test
+\includegraphics[width=0.7\textwidth]{Screenshot from 2024-10-25 20-07-20.png}
+
 
 \section{Conclusiones}\label{sec:Conclusiones}
+\text{Como conclusión de este informe, se exploraron distintas técnicas para asegurar los datos en ejecuciones concurrentes, como por ejemplo el uso de mutexes y el uso de listas atómicas que también ayudan a prevenir race conditions y deadlocks.
+Adicionalmente, se puede apreciar un mejor rendimiento al utilizar varios threads para procesar archivos en la función cargarMultiplesArchivos optimizando el tiempo de carga de los mismos.
+Se pudo satisfactoriamente utilizar el HashMapConcurrente como estructura de datos de una tienda que recibe gran volumen de pedidos garantizando que la información cargada en él sea consistente y eficiente. Se garantizó en cada paso proteger la información de condiciones de carrera y simultaneamente evitar largar esperas para realizar cargas y consultas.}
 \end{document}
