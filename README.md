@@ -25,7 +25,8 @@ Dato de color : dentro de la explicación del taller de FS y de Drivers se hace 
 - [Teórica - 11 : Sistemas Distribuidos](https://github.com/ToniusRetonius/Sistemas-Operativos/blob/main/Res%C3%BAmenes/T11%20-%20Sistemas%20Distribuidos.pdf)
 - [Teórica - 12 : Virtualización](https://github.com/ToniusRetonius/Sistemas-Operativos/blob/main/Res%C3%BAmenes/T12%20-%20Virtualizaci%C3%B3n.pdf)
 - [Manual de uso de la VM](https://github.com/ToniusRetonius/Sistemas-Operativos/blob/main/Res%C3%BAmenes/vm_sistemas_uso.pdf)
-- [Final](https://github.com/ToniusRetonius/Sistemas-Operativos/blob/main/Res%C3%BAmenes/FInal.pdf)
+- [Final](https://github.com/ToniusRetonius/Sistemas-Operativos/blob/main/Res%C3%BAmenes/Resumen%20Final.pdf)
+- [Práctica Final](https://github.com/ToniusRetonius/Sistemas-Operativos/blob/main/Res%C3%BAmenes/Pr%C3%A1ctica%20Final.pdf)
 
 
 # Guías Prácticas
